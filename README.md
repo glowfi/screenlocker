@@ -1,6 +1,6 @@
 ### SCREENLOCKER
 
-> See Diffrent Aerial shots as screensaver
+> See Different Aerial shots as screensaver
 
 More 50+ Aerial videos
 
