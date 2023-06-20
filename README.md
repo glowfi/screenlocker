@@ -22,7 +22,12 @@ pip install opencv-python tk pynput playsound pathlib pyautogui
 git clone https://github.com/glowfi/screenlocker
 cd screenlocker
 cargo build
-mv ./target/debug/screenlocker ~/.local/bin/screenlocker
-cd ..
-rm -rf screenlocker
+```
+
+# Binary Location
+
+```
+Afer Building with rust binary will be stored at :
+
+target/debug/screenlocker
 ```
