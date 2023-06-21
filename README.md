@@ -1,22 +1,18 @@
 ### SCREENLOCKER
 
-> See Different Aerial shots as screensaver
+> See different Aerial shots as screensaver
 
-More 50+ Aerial videos
+![alt text](./images/1.png)
+![alt text](./images/2.png)
+![alt text](./images/3.png)
+![alt text](./images/4.png)
 
-# DEMO
-
-![alt text](./1.png)
-![alt text](./2.png)
-![alt text](./3.png)
-![alt text](./4.png)
-
-# DEPENDENCIES
+# Dependencies
 
 -   Python
 -   Rust
 
-# INSTALL
+# How to install
 
 ```
 pip install opencv-python tk pynput playsound pathlib pyautogui
@@ -31,4 +27,17 @@ cargo build
 Afer Building with rust binary will be stored at :
 
 target/debug/screenlocker
+```
+
+# Instructions
+
+```
+After Building run the screenlocker alteast once to save your password.
+Then you can make a custom script to automatically run this binary after some minutes of inactivity.
+
+For example in Linux you can use xautolock like below :
+
+xautolock -time 10 -locker ~/.local/bin/screenlocker &
+
+After 10 minutes of inactivity this screenlocker will be invoked.
 ```
