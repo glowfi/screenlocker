@@ -1,7 +1,7 @@
-use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::process::Command;
+use std::{env, fs};
 use tempfile::NamedTempFile;
 
 const AUDIO_FILE_1: &[u8] = include_bytes!("./lock.ogg");
@@ -75,4 +75,5 @@ fn main() {
     temp_file_2.close().expect("failed to delete temp file");
     temp_file_3.close().expect("failed to delete temp file");
     temp_file_json.close().expect("failed to delete temp file");
+    let __ = fs::remove_file("temp.py");
 }
