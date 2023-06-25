@@ -4,6 +4,7 @@ use std::process::Command;
 use std::{env, fs};
 use tempfile::NamedTempFile;
 
+// Constants
 const AUDIO_FILE_1: &[u8] = include_bytes!("./lock.ogg");
 const AUDIO_FILE_2: &[u8] = include_bytes!("./unlock.ogg");
 const AUDIO_FILE_3: &[u8] = include_bytes!("./wrong.ogg");
@@ -67,13 +68,14 @@ fn main() {
         .output()
         .expect("failed to execute process");
 
-    println!("Output: {:?}", String::from_utf8_lossy(&output.stdout));
-    println!("Errors: {:?}", String::from_utf8_lossy(&output.stderr));
-
     // Clean up the temporary files
     temp_file_1.close().expect("failed to delete temp file");
     temp_file_2.close().expect("failed to delete temp file");
     temp_file_3.close().expect("failed to delete temp file");
     temp_file_json.close().expect("failed to delete temp file");
     let __ = fs::remove_file("temp.py");
+
+    // Print to Stdout
+    println!("Output: {:?}", String::from_utf8_lossy(&output.stdout));
+    println!("Errors: {:?}", String::from_utf8_lossy(&output.stderr));
 }

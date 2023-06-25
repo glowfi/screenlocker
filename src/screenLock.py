@@ -13,9 +13,20 @@ from playsound import playsound
 import pathlib
 import pyautogui
 
+# CONSTANTS
 CONFIG_LOC = None
-pyautogui.FAILSAFE = False
+JSON_LOC = os.environ.get("JSON_FILE_PATH")
+LOCK_SOUND_LOC = os.environ.get("AUDIO_FILE_PATH_1")
+UNLOCK_SOUND_LOC = os.environ.get("AUDIO_FILE_PATH_2")
+WRONG_SOUND_LOC = os.environ.get("AUDIO_FILE_PATH_3")
 
+string = ""
+matched = None
+password = ""
+pyautogui.FAILSAFE = False  # Bypass pyautogui failsafe
+
+
+# CHECK PLATFORM
 if pathlib.Path.home() / ".config/screensaver":
     # Unix-based systems (Linux, macOS, BSD)
     CONFIG_LOC = pathlib.Path.home() / ".config" / "screensaver"
@@ -27,22 +38,14 @@ CONFIG_LOC_FILENAME = "hash.txt"
 VIDEO_LOC_FILENAME = os.path.expanduser(f"{CONFIG_LOC}/vid.json")
 
 
-JSON_LOC = os.environ.get("JSON_FILE_PATH")
-LOCK_SOUND_LOC = os.environ.get("AUDIO_FILE_PATH_1")
-UNLOCK_SOUND_LOC = os.environ.get("AUDIO_FILE_PATH_2")
-WRONG_SOUND_LOC = os.environ.get("AUDIO_FILE_PATH_3")
-
-string = ""
-matched = None
-password = ""
-
-
+# Hash Function for password
 def getPass(message):
     hash_object = hashlib.sha512(message.encode())
     hex_digest = hash_object.hexdigest()
     return hex_digest
 
 
+# Play Aerial Videos
 def playVideo():
     # Get the screen size
     screen_width, screen_height = pyautogui.size()
@@ -54,8 +57,8 @@ def playVideo():
     with open(f"{VIDEO_LOC_FILENAME}", "r") as f:
         data = json.load(f)
 
+    # Start Keylogger
     log.start()
-    # rt.after(0, playVideo)
     if os.path.exists(LOCK_SOUND_LOC):
         playsound(LOCK_SOUND_LOC)
 
@@ -111,6 +114,7 @@ def playVideo():
             cv2.destroyAllWindows()
 
 
+# Fill Screen with a black background first
 def fillScreen():
     # Create a tkinter window
     root = tk.Tk()
@@ -144,6 +148,7 @@ def fillScreen():
     return root
 
 
+# Save Credentials
 def inputPass():
     def on_submit():
         global password
@@ -178,11 +183,13 @@ def inputPass():
     root.mainloop()
 
 
+# Kill Script
 def destroyScreen():
     pid = os.getpid()
     os.kill(pid, signal.SIGTERM)
 
 
+# Keylogger Function
 def listenKey():
     def on_key_press(key):
         global string
@@ -191,10 +198,7 @@ def listenKey():
                 if getPass(string) == matched:
                     if os.path.exists(UNLOCK_SOUND_LOC):
                         playsound(UNLOCK_SOUND_LOC)
-                        # os.system("killall -9 i3lock")
                     destroyScreen()
-                    # global rt
-                    # rt.destroy()
                 else:
                     if os.path.exists(WRONG_SOUND_LOC):
                         playsound(WRONG_SOUND_LOC)
@@ -212,10 +216,14 @@ def listenKey():
     return listener
 
 
+# Get root of fillScreen
 rt = fillScreen()
+
+# Get logger object bu do not start Keylogger
 log = listenKey()
 
 
+# Check if credentials exists
 if os.path.exists(f"{CONFIG_LOC}") and os.path.exists(
     f"{CONFIG_LOC}/{CONFIG_LOC_FILENAME}"
 ):
@@ -226,7 +234,10 @@ if os.path.exists(f"{CONFIG_LOC}") and os.path.exists(
         print("Credentials not saved properly!")
 
     else:
+        # FillScreen with black
         rt.mainloop()
+
+# Sve if credentials does not exists
 else:
     inputPass()
     val = getPass(password)
