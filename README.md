@@ -2,13 +2,9 @@
 
 > See different Aerial shots as screensaver
 
-![alt text](https://0x0.st/HQSv.gif)
-![alt text](https://0x0.st/HQSY.gif)
-![alt text](https://0x0.st/HQSg.gif)
-![alt text](https://0x0.st/HQSE.gif)
-![alt text](https://0x0.st/HQS6.gif)
-![alt text](https://0x0.st/HQSI.gif)
-![alt text](https://0x0.st/HQSl.gif)
+![alt text](./images/1.gif)
+![alt text](./images/2.gif)
+![alt text](./images/3.gif)
 
 # Dependencies
 
