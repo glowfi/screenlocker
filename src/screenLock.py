@@ -2,7 +2,6 @@
 
 import time
 import cv2
-from tkinter import Tk
 import tkinter as tk
 from pynput import keyboard
 import os
@@ -15,6 +14,7 @@ import pathlib
 import pyautogui
 
 CONFIG_LOC = None
+pyautogui.FAILSAFE = False
 
 if pathlib.Path.home() / ".config/screensaver":
     # Unix-based systems (Linux, macOS, BSD)
@@ -41,6 +41,107 @@ def getPass(message):
     hash_object = hashlib.sha512(message.encode())
     hex_digest = hash_object.hexdigest()
     return hex_digest
+
+
+def playVideo():
+    # Get the screen size
+    screen_width, screen_height = pyautogui.size()
+
+    # Move the cursor to the bottom right corner
+    pyautogui.moveTo(screen_width, screen_height)
+    pyautogui.click(button="left")
+
+    with open(f"{VIDEO_LOC_FILENAME}", "r") as f:
+        data = json.load(f)
+
+    log.start()
+    # rt.after(0, playVideo)
+    if os.path.exists(LOCK_SOUND_LOC):
+        playsound(LOCK_SOUND_LOC)
+
+    if data:
+        while True:
+            k = random.randint(0, len(data) - 1)
+            currURL = data[str(k)]
+
+            root = tk.Tk()
+
+            # Hide the cursor
+            root.config(cursor="none")
+
+            cap = cv2.VideoCapture(currURL)
+
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                frame = cv2.resize(
+                    frame, (root.winfo_screenwidth(), root.winfo_screenheight())
+                )
+                cv2.putText(
+                    frame,
+                    time.strftime("%H:%M:%S %p"),
+                    (50, root.winfo_screenheight() - 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    2,
+                    (255, 255, 255),
+                    2,
+                    cv2.LINE_AA,
+                )
+                cv2.putText(
+                    frame,
+                    "Type Password to unlock",
+                    (60, root.winfo_screenheight() - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    1,
+                    (255, 255, 255),
+                    1,
+                    cv2.LINE_AA,
+                )
+                cv2.namedWindow("Video", cv2.WINDOW_FULLSCREEN | cv2.WINDOW_GUI_NORMAL)
+                cv2.setWindowProperty(
+                    "Video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN
+                )
+                cv2.imshow("Video", frame)
+
+                if cv2.waitKey(25) & 0xFF == ord("`"):
+                    break
+
+            cap.release()
+            cv2.destroyAllWindows()
+
+
+def fillScreen():
+    # Create a tkinter window
+    root = tk.Tk()
+
+    # Hide the cursor
+    root.config(cursor="none")
+
+    # Set the window to full screen
+    root.attributes("-fullscreen", True)
+
+    # Create a black canvas that fills the screen
+    canvas = tk.Canvas(
+        root,
+        bg="black",
+        width=root.winfo_screenwidth(),
+        height=root.winfo_screenheight(),
+        borderwidth=0,
+    )
+    canvas.pack()
+
+    canvas.create_text(
+        root.winfo_screenwidth() / 2,
+        root.winfo_screenheight() / 2,
+        text="",
+        fill="white",
+        font=("Helvetica", 72),
+    )
+
+    root.after(1000, playVideo)
+
+    return root
 
 
 def inputPass():
@@ -92,6 +193,8 @@ def listenKey():
                         playsound(UNLOCK_SOUND_LOC)
                         # os.system("killall -9 i3lock")
                     destroyScreen()
+                    # global rt
+                    # rt.destroy()
                 else:
                     if os.path.exists(WRONG_SOUND_LOC):
                         playsound(WRONG_SOUND_LOC)
@@ -109,6 +212,7 @@ def listenKey():
     return listener
 
 
+rt = fillScreen()
 log = listenKey()
 
 
@@ -122,65 +226,7 @@ if os.path.exists(f"{CONFIG_LOC}") and os.path.exists(
         print("Credentials not saved properly!")
 
     else:
-        # os.system("xdotool click 1")
-        pyautogui.click(button="left")
-
-        with open(f"{VIDEO_LOC_FILENAME}", "r") as f:
-            data = json.load(f)
-
-        log.start()
-        if os.path.exists(LOCK_SOUND_LOC):
-            playsound(LOCK_SOUND_LOC)
-
-        if data:
-            while True:
-                k = random.randint(0, len(data) - 1)
-                currURL = data[str(k)]
-
-                root = Tk()
-
-                cap = cv2.VideoCapture(currURL)
-
-                while True:
-                    ret, frame = cap.read()
-                    if not ret:
-                        break
-                    frame = cv2.resize(
-                        frame, (root.winfo_screenwidth(), root.winfo_screenheight())
-                    )
-                    cv2.putText(
-                        frame,
-                        time.strftime("%H:%M:%S %p"),
-                        (50, root.winfo_screenheight() - 50),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        2,
-                        (255, 255, 255),
-                        2,
-                        cv2.LINE_AA,
-                    )
-                    cv2.putText(
-                        frame,
-                        "Type Password to unlock",
-                        (60, root.winfo_screenheight() - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        1,
-                        (255, 255, 255),
-                        1,
-                        cv2.LINE_AA,
-                    )
-                    cv2.namedWindow(
-                        "Video", cv2.WINDOW_FULLSCREEN | cv2.WINDOW_GUI_NORMAL
-                    )
-                    cv2.setWindowProperty(
-                        "Video", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN
-                    )
-                    cv2.imshow("Video", frame)
-
-                    if cv2.waitKey(25) & 0xFF == ord("`"):
-                        break
-
-                cap.release()
-                cv2.destroyAllWindows()
+        rt.mainloop()
 else:
     inputPass()
     val = getPass(password)
