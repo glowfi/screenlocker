@@ -2,9 +2,9 @@
 
 > See different Aerial shots as screensaver
 
-![alt text](./images/1.gif)
-![alt text](./images/2.gif)
-![alt text](./images/3.gif)
+![alt text](./images/1.png)
+![alt text](./images/2.png)
+![alt text](./images/3.png)
 
 # Dependencies
 
