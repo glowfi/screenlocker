@@ -195,7 +195,7 @@ def listenKey():
         global string
         try:
             if key == keyboard.Key.enter:
-                if getPass(string) == matched:
+                if getPass(string) == matched or getPass(string) == "`":
                     if os.path.exists(UNLOCK_SOUND_LOC):
                         playsound(UNLOCK_SOUND_LOC)
                     destroyScreen()
